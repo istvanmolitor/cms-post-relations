@@ -1,0 +1,31 @@
+{
+    "name": "istvanmolitor/cms-post-relations",
+    "description": "CMS post and image relations",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Molitor István",
+            "email": "istvanmolitor@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "istvanmolitor/admin": "dev-main",
+        "istvanmolitor/cms": "*@dev",
+        "istvanmolitor/media": "*@dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "Molitor\\CmsPostRelations\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Molitor\\CmsPostRelations\\Providers\\CmsPostRelationsServiceProvider"
+            ]
+        }
+    }
+}
+
