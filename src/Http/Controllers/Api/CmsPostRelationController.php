@@ -18,7 +18,13 @@ class CmsPostRelationController
     public function index(Request $request): JsonResponse
     {
         $query = CmsPostRelation::query()
-            ->with(['post:id,title', 'relatedPost:id,title']);
+            ->with(['post:id,title', 'relatedPost:id,title,main_image_url']);
+
+        $postId = $request->input('post_id');
+
+        if ($postId !== null && $postId !== '') {
+            $query->where('post_id', (int) $postId);
+        }
 
         if ($search = $request->string('search')->toString()) {
             $query->where(function ($builder) use ($search): void {
@@ -47,7 +53,7 @@ class CmsPostRelationController
         return response()->json(new DataTableResource(
             $relations,
             CmsPostRelationResource::class,
-            $request->only(['search', 'sort', 'direction'])
+            $request->only(['search', 'sort', 'direction', 'post_id'])
         ));
     }
 
@@ -70,7 +76,7 @@ class CmsPostRelationController
             'sort' => (int) $request->integer('sort', 0),
         ]);
 
-        $relation->load(['post:id,title', 'relatedPost:id,title']);
+        $relation->load(['post:id,title', 'relatedPost:id,title,main_image_url']);
 
         return response()->json([
             'data' => new CmsPostRelationResource($relation),
@@ -79,7 +85,7 @@ class CmsPostRelationController
 
     public function show(CmsPostRelation $cmsPostRelation): JsonResponse
     {
-        $cmsPostRelation->load(['post:id,title', 'relatedPost:id,title']);
+        $cmsPostRelation->load(['post:id,title', 'relatedPost:id,title,main_image_url']);
 
         return response()->json([
             'data' => new CmsPostRelationResource($cmsPostRelation),
@@ -94,7 +100,7 @@ class CmsPostRelationController
             'sort' => (int) $request->integer('sort', 0),
         ]);
 
-        $cmsPostRelation->load(['post:id,title', 'relatedPost:id,title']);
+        $cmsPostRelation->load(['post:id,title', 'relatedPost:id,title,main_image_url']);
 
         return response()->json([
             'data' => new CmsPostRelationResource($cmsPostRelation),

@@ -17,6 +17,7 @@ class CmsPostRelationResource extends JsonResource
             'post_title' => $this->post?->title,
             'related_post_id' => $this->related_post_id,
             'related_post_title' => $this->relatedPost?->title,
+            'related_post_main_image_url' => $this->relatedPost?->main_image_url,
             'sort' => $this->sort,
             'created_at' => $this->created_at?->toISOString(),
             'updated_at' => $this->updated_at?->toISOString(),
