@@ -18,4 +18,3 @@ class CmsPostRelationsServiceProvider extends ServiceProvider
             ->group(__DIR__.'/../routes/api.php');
     }
 }
-

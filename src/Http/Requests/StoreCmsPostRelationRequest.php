@@ -42,6 +42,3 @@ class StoreCmsPostRelationRequest extends FormRequest
         ];
     }
 }
-
-
-

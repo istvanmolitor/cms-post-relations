@@ -24,5 +24,3 @@ class CmsPostRelationResource extends JsonResource
         ];
     }
 }
-
-

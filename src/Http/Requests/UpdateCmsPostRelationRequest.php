@@ -45,6 +45,3 @@ class UpdateCmsPostRelationRequest extends FormRequest
         ];
     }
 }
-
-
-

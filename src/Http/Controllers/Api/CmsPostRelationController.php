@@ -114,5 +114,3 @@ class CmsPostRelationController
         return response()->json(null, 204);
     }
 }
-
-

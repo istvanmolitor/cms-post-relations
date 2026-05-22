@@ -12,4 +12,3 @@ Route::prefix('admin')
         Route::get('cms-post-relations/options', [CmsPostRelationController::class, 'options'])->name('options');
         Route::apiResource('cms-post-relations', CmsPostRelationController::class);
     });
-

@@ -34,5 +34,3 @@ class CmsPostRelation extends Model
         return $this->belongsTo(Post::class, 'related_post_id');
     }
 }
-
-
