@@ -12,9 +12,13 @@ use Molitor\CmsPostRelations\Http\Requests\StoreCmsPostRelationRequest;
 use Molitor\CmsPostRelations\Http\Requests\UpdateCmsPostRelationRequest;
 use Molitor\CmsPostRelations\Http\Resources\CmsPostRelationResource;
 use Molitor\CmsPostRelations\Models\CmsPostRelation;
+use Molitor\CmsPostRelations\Repositories\CmsPostRelationRepositoryInterface;
 
 class CmsPostRelationController
 {
+    public function __construct(
+        private CmsPostRelationRepositoryInterface $cmsPostRelationRepository
+    ) {}
     public function index(Request $request): JsonResponse
     {
         $query = CmsPostRelation::query()
@@ -70,11 +74,11 @@ class CmsPostRelationController
 
     public function store(StoreCmsPostRelationRequest $request): JsonResponse
     {
-        $relation = CmsPostRelation::query()->create([
-            'post_id' => (int) $request->integer('post_id'),
-            'related_post_id' => (int) $request->integer('related_post_id'),
-            'sort' => (int) $request->integer('sort', 0),
-        ]);
+        $relation = $this->cmsPostRelationRepository->create(
+            (int) $request->integer('post_id'),
+            (int) $request->integer('related_post_id'),
+            (int) $request->integer('sort', 0),
+        );
 
         $relation->load(['post:id,title', 'relatedPost:id,title,main_image_url']);
 
