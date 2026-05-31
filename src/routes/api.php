@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Molitor\CmsPostRelations\Http\Controllers\Api\CmsPostRelationController;
 
 Route::prefix('admin')
-    ->middleware(['api', 'auth:sanctum'])
+    ->middleware(['api', 'auth:sanctum', 'permission:cms'])
     ->name('cms-post-relations.admin.')
     ->group(function (): void {
         Route::get('cms-post-relations/options', [CmsPostRelationController::class, 'options'])->name('options');
