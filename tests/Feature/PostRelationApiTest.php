@@ -11,7 +11,7 @@ use Molitor\Cms\Models\Content;
 use Molitor\Cms\Models\Post;
 use Tests\TestCase;
 
-class CmsPostRelationApiTest extends TestCase
+class PostRelationApiTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -22,7 +22,7 @@ class CmsPostRelationApiTest extends TestCase
         $post = $this->createPost();
         $relatedPost = $this->createPost('Kapcsolt poszt');
 
-        $response = $this->postJson('/api/admin/cms-post-relations', [
+        $response = $this->postJson('/api/admin/post-relations', [
             'post_id' => $post->id,
             'related_post_id' => $relatedPost->id,
             'sort' => 5,
@@ -34,7 +34,7 @@ class CmsPostRelationApiTest extends TestCase
             ->assertJsonPath('data.related_post_id', $relatedPost->id)
             ->assertJsonPath('data.sort', 5);
 
-        $this->assertDatabaseHas('cms_post_relations', [
+        $this->assertDatabaseHas('post_relations', [
             'post_id' => $post->id,
             'related_post_id' => $relatedPost->id,
             'sort' => 5,
@@ -54,9 +54,9 @@ class CmsPostRelationApiTest extends TestCase
             'sort' => 0,
         ];
 
-        $this->postJson('/api/admin/cms-post-relations', $payload)->assertCreated();
+        $this->postJson('/api/admin/post-relations', $payload)->assertCreated();
 
-        $this->postJson('/api/admin/cms-post-relations', $payload)
+        $this->postJson('/api/admin/post-relations', $payload)
             ->assertStatus(422)
             ->assertJsonValidationErrors(['related_post_id']);
     }
@@ -77,4 +77,3 @@ class CmsPostRelationApiTest extends TestCase
         ]);
     }
 }
-

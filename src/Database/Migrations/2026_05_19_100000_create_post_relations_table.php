@@ -10,11 +10,12 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('cms_post_relations', function (Blueprint $table): void {
+        Schema::create('post_relations', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('post_id')->constrained('posts')->cascadeOnDelete();
             $table->foreignId('related_post_id')->constrained('posts')->cascadeOnDelete();
-            $table->unsignedInteger('sort')->default(0);
+            $table->foreignId('post_relation_id')->nullable()->constrained('post_relation_types')->nullOnDelete();
+            $table->float('sort')->default(0);
             $table->timestamps();
 
             $table->unique(['post_id', 'related_post_id']);
@@ -24,6 +25,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('cms_post_relations');
+        Schema::dropIfExists('post_relations');
     }
 };

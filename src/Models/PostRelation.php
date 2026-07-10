@@ -8,20 +8,22 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Molitor\Cms\Models\Post;
 
-class CmsPostRelation extends Model
+class PostRelation extends Model
 {
-    protected $table = 'cms_post_relations';
+    protected $table = 'post_relations';
 
     protected $fillable = [
         'post_id',
         'related_post_id',
+        'post_relation_id',
         'sort',
     ];
 
     protected $casts = [
         'post_id' => 'integer',
         'related_post_id' => 'integer',
-        'sort' => 'integer',
+        'post_relation_id' => 'integer',
+        'sort' => 'float',
     ];
 
     public function post(): BelongsTo
@@ -32,5 +34,10 @@ class CmsPostRelation extends Model
     public function relatedPost(): BelongsTo
     {
         return $this->belongsTo(Post::class, 'related_post_id');
+    }
+
+    public function relationType(): BelongsTo
+    {
+        return $this->belongsTo(PostRelationType::class, 'post_relation_id');
     }
 }

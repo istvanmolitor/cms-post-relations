@@ -7,7 +7,7 @@ namespace Molitor\CmsPostRelations\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CmsPostRelationResource extends JsonResource
+class PostRelationResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
@@ -18,6 +18,8 @@ class CmsPostRelationResource extends JsonResource
             'related_post_id' => $this->related_post_id,
             'related_post_title' => $this->relatedPost?->title,
             'related_post_main_image_url' => $this->relatedPost?->main_image_url,
+            'post_relation_id' => $this->post_relation_id,
+            'post_relation_type_name' => $this->relationType?->name,
             'sort' => $this->sort,
             'created_at' => $this->created_at?->toISOString(),
             'updated_at' => $this->updated_at?->toISOString(),

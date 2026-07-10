@@ -6,16 +6,16 @@ namespace Molitor\CmsPostRelations\Providers;
 
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
-use Molitor\CmsPostRelations\Repositories\CmsPostRelationRepository;
-use Molitor\CmsPostRelations\Repositories\CmsPostRelationRepositoryInterface;
+use Molitor\CmsPostRelations\Repositories\PostRelationRepository;
+use Molitor\CmsPostRelations\Repositories\PostRelationRepositoryInterface;
 
 class CmsPostRelationsServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
         $this->app->bind(
-            CmsPostRelationRepositoryInterface::class,
-            CmsPostRelationRepository::class,
+            PostRelationRepositoryInterface::class,
+            PostRelationRepository::class,
         );
     }
 
