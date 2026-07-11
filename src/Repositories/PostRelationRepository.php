@@ -24,4 +24,12 @@ class PostRelationRepository implements PostRelationRepositoryInterface
             'post_relation_type_id' => $relationTypeId,
         ]);
     }
+
+    public function deleteByPostAndType(int $postId, ?int $relationTypeId = null): int
+    {
+        return $this->postRelation->query()
+            ->where('post_id', $postId)
+            ->where('post_relation_type_id', $relationTypeId)
+            ->delete();
+    }
 }

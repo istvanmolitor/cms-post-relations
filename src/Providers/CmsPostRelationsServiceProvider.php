@@ -8,6 +8,8 @@ use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 use Molitor\CmsPostRelations\Repositories\PostRelationRepository;
 use Molitor\CmsPostRelations\Repositories\PostRelationRepositoryInterface;
+use Molitor\CmsPostRelations\Repositories\PostRelationTypeRepository;
+use Molitor\CmsPostRelations\Repositories\PostRelationTypeRepositoryInterface;
 
 class CmsPostRelationsServiceProvider extends ServiceProvider
 {
@@ -16,6 +18,11 @@ class CmsPostRelationsServiceProvider extends ServiceProvider
         $this->app->bind(
             PostRelationRepositoryInterface::class,
             PostRelationRepository::class,
+        );
+
+        $this->app->bind(
+            PostRelationTypeRepositoryInterface::class,
+            PostRelationTypeRepository::class,
         );
     }
 
