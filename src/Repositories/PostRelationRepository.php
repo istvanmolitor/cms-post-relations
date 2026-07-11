@@ -21,7 +21,7 @@ class PostRelationRepository implements PostRelationRepositoryInterface
             'post_id' => $postId,
             'related_post_id' => $relatedPostId,
             'sort' => $sort,
-            'post_relation_id' => $relationTypeId,
+            'post_relation_type_id' => $relationTypeId,
         ]);
     }
 }

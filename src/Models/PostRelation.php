@@ -15,14 +15,14 @@ class PostRelation extends Model
     protected $fillable = [
         'post_id',
         'related_post_id',
-        'post_relation_id',
+        'post_relation_type_id',
         'sort',
     ];
 
     protected $casts = [
         'post_id' => 'integer',
         'related_post_id' => 'integer',
-        'post_relation_id' => 'integer',
+        'post_relation_type_id' => 'integer',
         'sort' => 'float',
     ];
 
@@ -38,6 +38,6 @@ class PostRelation extends Model
 
     public function relationType(): BelongsTo
     {
-        return $this->belongsTo(PostRelationType::class, 'post_relation_id');
+        return $this->belongsTo(PostRelationType::class, 'post_relation_type_id');
     }
 }

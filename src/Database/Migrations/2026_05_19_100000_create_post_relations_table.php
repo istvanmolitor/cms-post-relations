@@ -14,12 +14,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('post_id')->constrained('posts')->cascadeOnDelete();
             $table->foreignId('related_post_id')->constrained('posts')->cascadeOnDelete();
-            $table->foreignId('post_relation_id')->nullable()->constrained('post_relation_types')->nullOnDelete();
+            $table->foreignId('post_relation_type_id')->constrained('post_relation_types')->restrictOnDelete();
             $table->float('sort')->default(0);
             $table->timestamps();
 
-            $table->unique(['post_id', 'related_post_id']);
-            $table->index(['post_id', 'sort']);
+            $table->unique(['post_id', 'related_post_id', 'post_relation_type_id'], 'post_relations_unique');
+            $table->index(['post_id']);
         });
     }
 

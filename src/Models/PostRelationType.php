@@ -34,6 +34,6 @@ class PostRelationType extends Model
 
     public function postRelations(): HasMany
     {
-        return $this->hasMany(PostRelation::class, 'post_relation_id');
+        return $this->hasMany(PostRelation::class, 'post_relation_type_id');
     }
 }

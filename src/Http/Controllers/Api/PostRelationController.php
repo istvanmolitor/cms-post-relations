@@ -85,17 +85,23 @@ class PostRelationController
 
     public function store(StorePostRelationRequest $request): JsonResponse
     {
-        $relation = $this->postRelationRepository->create(
-            (int) $request->integer('post_id'),
-            (int) $request->integer('related_post_id'),
-            (float) $request->input('sort', 0),
-            $request->filled('post_relation_id') ? (int) $request->integer('post_relation_id') : null,
-        );
+        $postId = (int) $request->integer('post_id');
+        $relatedPostId = (int) $request->integer('related_post_id');
+        $sort = (float) $request->input('sort', 0);
 
-        $relation->load(['post:id,title', 'relatedPost:id,title,main_image_url', 'relationType:id,name']);
+        $relations = collect($request->input('post_relation_type_ids'))
+            ->map(fn ($relationTypeId) => $this->postRelationRepository->create(
+                $postId,
+                $relatedPostId,
+                $sort,
+                (int) $relationTypeId,
+            ))
+            ->each(fn (PostRelation $relation) => $relation->load([
+                'post:id,title', 'relatedPost:id,title,main_image_url', 'relationType:id,name',
+            ]));
 
         return response()->json([
-            'data' => new PostRelationResource($relation),
+            'data' => PostRelationResource::collection($relations),
         ], 201);
     }
 
@@ -114,7 +120,7 @@ class PostRelationController
             'post_id' => (int) $request->integer('post_id'),
             'related_post_id' => (int) $request->integer('related_post_id'),
             'sort' => (float) $request->input('sort', 0),
-            'post_relation_id' => $request->filled('post_relation_id') ? (int) $request->integer('post_relation_id') : null,
+            'post_relation_type_id' => $request->filled('post_relation_type_id') ? (int) $request->integer('post_relation_type_id') : null,
         ]);
 
         $postRelation->load(['post:id,title', 'relatedPost:id,title,main_image_url', 'relationType:id,name']);
