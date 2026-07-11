@@ -6,8 +6,9 @@ namespace Molitor\CmsPostRelations\Http\Controllers\Api;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Molitor\Admin\Http\Resources\DataTableResource;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Molitor\Cms\Models\Post;
+use Molitor\CmsPostRelations\DataTables\PostRelationDataTable;
 use Molitor\CmsPostRelations\Http\Requests\StorePostRelationRequest;
 use Molitor\CmsPostRelations\Http\Requests\UpdatePostRelationRequest;
 use Molitor\CmsPostRelations\Http\Resources\PostRelationResource;
@@ -20,51 +21,14 @@ class PostRelationController
     public function __construct(
         private PostRelationRepositoryInterface $postRelationRepository
     ) {}
-    public function index(Request $request): JsonResponse
+    public function index(Request $request): AnonymousResourceCollection
     {
-        $query = PostRelation::query()
-            ->with(['post:id,title', 'relatedPost:id,title,main_image_url', 'relationType:id,name']);
+        $post = Post::findOrFail($request->integer('post_id'));
+        $type = PostRelationType::findOrFail($request->integer('post_relation_type_id'));
 
-        $postId = $request->input('post_id');
+        $dataTable = new PostRelationDataTable($post, $type, $request);
 
-        if ($postId !== null && $postId !== '') {
-            $query->where('post_id', (int) $postId);
-        }
-
-        if ($search = $request->string('search')->toString()) {
-            $query->where(function ($builder) use ($search): void {
-                $builder->whereHas('post', function ($postQuery) use ($search): void {
-                    $postQuery->where('title', 'like', '%'.$search.'%');
-                })->orWhereHas('relatedPost', function ($relatedPostQuery) use ($search): void {
-                    $relatedPostQuery->where('title', 'like', '%'.$search.'%');
-                });
-            });
-        }
-
-        $allowedSortFields = ['id', 'post_id', 'related_post_id', 'sort', 'created_at'];
-        $sort = $request->input('sort', 'sort');
-        $direction = $request->input('direction', 'asc') === 'desc' ? 'desc' : 'asc';
-
-        if (in_array($sort, $allowedSortFields, true)) {
-            $query->orderBy($sort, $direction);
-        } else {
-            $query->orderBy('sort')->orderBy('id');
-        }
-
-        $relations = $query
-            ->paginate((int) $request->input('per_page', 10))
-            ->withQueryString();
-
-        return response()->json(new DataTableResource(
-            $relations,
-            PostRelationResource::class,
-            $request->only(['search', 'sort', 'direction', 'post_id']),
-            [
-                ['key' => 'related_post_title', 'label' => 'Kapcsolt poszt'],
-                ['key' => 'post_relation_type_name', 'label' => 'Kapcsolat típusa'],
-                ['key' => 'sort', 'label' => 'Sorrend', 'sortable' => true],
-            ]
-        ));
+        return $dataTable->getResponse();
     }
 
     public function options(): JsonResponse
@@ -85,23 +49,17 @@ class PostRelationController
 
     public function store(StorePostRelationRequest $request): JsonResponse
     {
-        $postId = (int) $request->integer('post_id');
-        $relatedPostId = (int) $request->integer('related_post_id');
-        $sort = (float) $request->input('sort', 0);
+        $relation = $this->postRelationRepository->create(
+            (int) $request->integer('post_id'),
+            (int) $request->integer('related_post_id'),
+            (float) $request->input('sort', 0),
+            (int) $request->integer('post_relation_type_id'),
+        );
 
-        $relations = collect($request->input('post_relation_type_ids'))
-            ->map(fn ($relationTypeId) => $this->postRelationRepository->create(
-                $postId,
-                $relatedPostId,
-                $sort,
-                (int) $relationTypeId,
-            ))
-            ->each(fn (PostRelation $relation) => $relation->load([
-                'post:id,title', 'relatedPost:id,title,main_image_url', 'relationType:id,name',
-            ]));
+        $relation->load(['post:id,title', 'relatedPost:id,title,main_image_url', 'relationType:id,name']);
 
         return response()->json([
-            'data' => PostRelationResource::collection($relations),
+            'data' => new PostRelationResource($relation),
         ], 201);
     }
 
